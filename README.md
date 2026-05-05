@@ -1,45 +1,41 @@
-# Pi-Monitoring: Digital Twin Frontend
-> **"Industrial Vibration Data to Real-time 3D Visualization"**
+#  Pi-Monitoring: Industrial Digital Twin Dashboard
 
-본 레포지토리는 산업용 장비의 상태를 실시간으로 모니터링하기 위한 디지털 트윈 대시보드(Frontend)입니다. 라즈베리 파이로부터 수집된 센서 데이터를 MQTT와 WebSocket을 통해 수신하고, 이를 Three.js 기반의 3D 모델로 시각화하여 장비의 안정성과 물리적 거동을 직관적으로 파악할 수 있게 돕습니다.
+> **"물리적 기구 장치의 움직임을 데이터화하고 실시간으로 시각화하는 디지털 트윈 시스템"**
+> 기구설계 엔지니어로서의 도메인 지식과 소프트웨어 엔지니어링 기술을 결합한 모니터링 프로젝트입니다.
 
 ---
 
-## Tech Stack
+##  Tech Stack
 
-### **Core**
+### **Frontend & Interface**
 *   **Framework**: Next.js (App Router)
 *   **Language**: TypeScript
-*   **State Management**: React Hooks (useState, useEffect)
-*   **3D Engine**: Three.js / React Three Fiber (R3F)
+*   **3D Engine**: Three.js / React Three Fiber (R3F) -> 아직 고민중...
+*   **Communication**: WebSocket (for Real-time Data Streaming)
 
-### **Communication & Infra**
-*   **Real-time**: WebSocket (FastAPI와 실시간 통신)
-*   **Deployment**: Docker
-
----
-
-## Key Implementation (Frontend)
-
-### 1. Real-time Digital Twin Synchronization
-*   **Three.js(R3F)**를 활용하여 실제 하드웨어의 6축 센서 데이터(MPU-6050)와 3D 모델의 회전(Rotation) 및 진동 수치를 동기화했습니다.
-*   고빈도 데이터 수신 시 발생할 수 있는 시각적 끊김을 방지하기 위해 프레임 보간 로직을 적용했습니다.
-
-### 2. Type-Safe Data Handling
-*   **TypeScript**를 사용하여 센서 데이터(Ax, Ay, Az, Gx, Gy, Gz)에 대한 엄격한 인터페이스를 정의했습니다.
-*   하드웨어로부터 넘어오는 원시 데이터의 부정확성이나 타입 불일치로 인한 런타임 에러를 사전에 차단했습니다.
-
-### 3. Fail-Safe Condition Monitoring (Engineering Logic)
-*   **설계 및 안정성 분석 경험**을 바탕으로, 장비의 임계 진동 수치 초과 시 즉각적인 시각적 경고(UI 피드백)가 발생하도록 로직을 설계했습니다.
-*   단순한 데이터 표시를 넘어, 시스템의 Fail-safe 상태를 모니터링하는 관점으로 대시보드를 구성했습니다.
+### **Infrastructure**
+*   **Deployment**: Docker (Containerized Build)
+*   **Communication Protocol**: MQTT (Edge-to-Server)
 
 ---
 
-## Architecture
+##  Key Features
+
+### 1. 실시간 디지털 트윈 동기화
+*   **Three.js(R3F)**를 활용하여 실제 장비의 6축 센서 데이터(MPU-6050)를 3D 모델의 회전 및 진동 수치와 실시간 동기화합니다.
+*   산업용 표준 프로토콜인 **MQTT**와 **WebSocket**을 연동하여 지연 시간을 최소화한 데이터 흐름을 구현했습니다.
+
+### 2. TypeScript 기반의 엄격한 데이터 타입 관리
+*   하드웨어 센서에서 들어오는 로우 레벨 데이터(Ax, Ay, Az 등)를 TypeScript Interface로 정의하여, 데이터 흐름 전반에서 타입 안정성을 확보하고 런타임 에러를 방지했습니다.
+
+### 3. 기구학적 인사이트 기반 UI/UX
+*   약 2년간의 기구설계 실무 경험을 바탕으로, 기계 장치의 진동 및 상태 모니터링 시 엔지니어에게 필요한 핵심 지표를 시각화하는 데 집중했습니다.
+
+---
+
+##  System Architecture
+
 ```text
-[Hardware] --- (MQTT) ---> [FastAPI] --- (WebSocket) ---> [Next.js (This Repo)]
-                                                               |
-                                                   +-----------+-----------+
-                                                   |           |           |
-                                              [3D Twin]   [Real-time]  [Alert System]
-                                              (Three.js)    (Charts)
+[Edge Device] --- (MQTT) ---> [FastAPI Server] --- (WebSocket) ---> [Next.js Dashboard]
+      |                                                                    |
+  MPU-6050 센서                                                     Three.js 3D Rendering
